@@ -30,7 +30,7 @@ def get_access_token():
 # Make a request to the OAuth Proxy endpoint
 def call_elastic_search():
     access_token = get_access_token()
-    url = "https://labassistdev.pnnl.gov/proxy/actman/elasticsearch/hub-suggestions-people/_search?q=skills:Nuclear+Reactors"
+    url = "https://labassist.pnnl.gov/proxy/actman/elasticsearch/hub-suggestions-people/_search?q=skills:Nuclear+Reactors"
     headers = {
         'Authorization': f'Bearer {access_token}'
     }
