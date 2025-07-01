@@ -1,3 +1,6 @@
 requests
 dotenv
 msal
+pydantic
+fastapi
+open_webui

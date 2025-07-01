@@ -1,10 +1,6 @@
 import requests
 from dotenv import load_dotenv
 import os
-import getopt
-import sys
-import json
-import re
 from msal import ConfidentialClientApplication
 
 # Load environment variables from .env file
