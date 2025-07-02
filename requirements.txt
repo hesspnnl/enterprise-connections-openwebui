@@ -4,3 +4,4 @@ msal
 pydantic
 fastapi
 open_webui
+asyncio
