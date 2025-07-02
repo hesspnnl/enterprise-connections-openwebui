@@ -41,7 +41,7 @@ class Tools():
         await __event_emitter__(
             {
                 "type": "message",
-                "data": {"description": "Inside the _get_access_token method", "done": False, "hidden": False}, 
+                "data": {"content": "Inside the _get_access_token method\n"}, 
             }
         )
         try:
@@ -51,20 +51,20 @@ class Tools():
             await __event_emitter__(
                 {
                     "type": "message",
-                    "data": {"description": "The token was retrieved successfully.", "done": False, "hidden": False}, 
+                    "data": {"content": "The token was retrieved successfully.\n"}, 
                 })
         except Exception as e:
             await __event_emitter__(
                 {
                     "type": "message", 
-                    "data": {"description": "The token creation was NOT successful.", "done": False, "hidden": False}, 
+                    "data": {"content": "The token creation was NOT successful.\n"}, 
                 }
             )
             raise Exception(f"Failed to create ClientSecretCredential: {str(e)}")
         await __event_emitter__(
             {
                 "type": "message",
-                "data": {"description": "The token creation was successful.", "done": False, "hidden": False}, 
+                "data": {"content": "The token creation was successful.\n"}, 
             }
         )
         
@@ -83,7 +83,7 @@ class Tools():
         await __event_emitter__(
             {
                 "type": "message",
-                "data": {"description": "The token was retrieved successfully.", "done": False, "hidden": False}, 
+                "data": {"content": "The token was retrieved successfully.\n"}, 
             }
         )
         headers = {"Authorization": f"Bearer {token}"}
@@ -91,16 +91,16 @@ class Tools():
         await __event_emitter__(
             {
                 "type": "message",
-                "data": {"description": "The params are " + str(params), "done": False, "hidden": False}, 
+                "data": {"content": "The params are " + str(params) + "\n"},
             }
             )
         try:
-            resp = requests.get(self._ENDPOINT, params=params, headers=headers, timeout=10)
+            resp = requests.get("https://labassist.pnnl.gov/proxy/actman/elasticsearch/hub-suggestions-people/_search", params=params, headers=headers, timeout=10)
             if resp.status_code == 200:
                 await __event_emitter__(
                     {
                         "type": "message",
-                        "data": {"description": "The endpoint was called successfully.", "done": False, "hidden": False}, 
+                        "data": {"content": "The endpoint was called successfully.\n"}, 
                     }
                 )
                 return resp.json()
@@ -108,7 +108,7 @@ class Tools():
                 await __event_emitter__(
                     {
                         "type": "message",
-                        "data": {"description": "There was an error calling the endpoint. The error reads: " + resp.text, "done": False, "hidden": False}, 
+                        "data": {"content": "There was an error calling the endpoint. The error reads: " + resp.text}, 
                     }
                 )
                 return {
@@ -116,6 +116,12 @@ class Tools():
                     "details": resp.text
                 }
         except Exception as e:
+            await __event_emitter__(
+                {
+                    "type": "message",
+                    "data": {"content": "There was an exception calling the endpoint. The error reads: " + str(e) + "\n"}, 
+                }
+            )
             return {"error": "API call exception", "details": str(e)}
         
 if __name__ == "__main__":
