@@ -5,3 +5,4 @@ pydantic
 fastapi
 open_webui
 asyncio
+mcp[cli]
