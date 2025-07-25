@@ -1,0 +1,41 @@
+swagger: '2.0'
+info:
+  title: Hub Search
+  description: MCP Test Specification, YAML for streamable MCP support in Copilot Studio
+  version: 1.0.0
+host: >-
+  app-eitwest2-nonprod-poc-hub-search-test.ase-eitwest2-nonprod.appserviceenvironment.net
+basePath: /
+schemes:
+  - https
+paths:
+  /sse:
+    get:
+      summary: Hub Search Server
+      x-ms-agentic-protocol: mcp-streamable-1.0
+      operationId: InvokeMCP
+      responses:
+        '200':
+          description: Success
+  /hub:
+    post:
+      summary: Hub Search by name or string
+      x-ms-agentic-protocol: mcp-streamable-1.0
+      operationId: HubSearch
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters:
+        - name: searchTerm
+          in: formData
+          required: true
+          type: string
+          description: The search term to use for the hub search.
+        - name: hasAvailability
+          in: formData
+          required: false
+          type: boolean
+          description: Filter results based on availability.
+      responses:
+        '200':
+          description: Success
+securityDefinitions: {}
