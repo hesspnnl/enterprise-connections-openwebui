@@ -25,7 +25,7 @@ class Tools():
         CLIENT_SECRET: str = Field(default=os.getenv("CLIENT_SECRET"), description="client secret for service account")
         TENANT_ID: str = Field(default=os.getenv("TENANT_ID"), description="tenant ID for service account")
 
-    _ENDPOINT = "https://labassist.pnnl.gov/proxy/actman/elasticsearch/hub-suggestions-people/_search"
+    _ENDPOINT = "https://apimdevgw.pnnl.gov/proof-of-concept-hub-mcp/v1/hub"
     def __init__(self):
         """Initialize the Tool."""
         self.valves = self.Valves()
@@ -36,7 +36,7 @@ class Tools():
         This method uses the CLIENT_ID, CLIENT_SECRET, and TENANT_ID from the pipeline's valves.
         :return: Access token as a string.
         """
-        SCOPE = "https://labassist.pnnl.gov/proxy/.default"
+        SCOPE = "api://proof-of-concept.pnnl.gov/hub/.default"
 
         await __event_emitter__(
             {
@@ -72,11 +72,10 @@ class Tools():
         
     async def search_internal_users(self, query: str, __event_emitter__=None) -> dict:
         """
-        Search for internal users based on a query string.
+        Search for internal users based on a string.
         This method sends a request to the internal API endpoint to search for users.
-        An example query could be "skills:C#" if the user is searching for skills.
-        
-        :param query: The search query string.
+
+        :searchTerm: The search term to query.
         :return: A dictionary containing the search results or an error message.
         """
         token = await self._get_access_token(__event_emitter__)
@@ -86,8 +85,11 @@ class Tools():
                 "data": {"content": "The token was retrieved successfully.\n"}, 
             }
         )
-        headers = {"Authorization": f"Bearer {token}"}
-        params = {"q": query}
+        headers = {
+            'Authorization': f'Bearer {token}',
+            'User-Agent': 'curl/7.64.1'  # Example curl User-Agent value
+        }
+        params = {"searchTerm": query}
         await __event_emitter__(
             {
                 "type": "message",
@@ -95,7 +97,7 @@ class Tools():
             }
             )
         try:
-            resp = requests.get("https://labassist.pnnl.gov/proxy/actman/elasticsearch/hub-suggestions-people/_search", params=params, headers=headers, timeout=10)
+            resp = requests.post(self._ENDPOINT, data=params, headers=headers, timeout=10)
             if resp.status_code == 200:
                 await __event_emitter__(
                     {
