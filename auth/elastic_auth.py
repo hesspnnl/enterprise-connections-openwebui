@@ -6,10 +6,10 @@ from msal import ConfidentialClientApplication
 # Load environment variables from .env file
 load_dotenv()
 # Retrieve environment variables
-CLIENT_ID = os.getenv('HUB_APIM_CLIENT_ID')
-CLIENT_SECRET = os.getenv('HUB_APIM_CLIENT_SECRET')
+CLIENT_ID = os.getenv('COST_APIM_CLIENT_ID')
+CLIENT_SECRET = os.getenv('COST_APIM_CLIENT_SECRET')
 TENANT_ID = os.getenv('TENANT_ID')
-SCOPE = [os.getenv('HUB_APIM_SCOPE')]
+SCOPE = [os.getenv('COST_APIM_SCOPE')]
 from azure.identity import ClientSecretCredential
 
 # URL to request a token from Azure AD
@@ -59,6 +59,20 @@ def call_apim_search_post():
     response = requests.post(url, headers=headers, data={"searchTerm": "python"})
     return response.json()
 
+def call_apim_cost_post():
+    """
+    Call the APIM search endpoint to retrieve user information based on a query.
+    """
+    access_token = get_access_token()
+    url = "https://apimdevgw.pnnl.gov/proof-of-concept-costs-mcp/v1/costs"
+    headers = {
+        'Authorization': f'Bearer {access_token}',
+        'User-Agent': 'requests'  # Example requests User-Agent value
+    }
+    params = {"fiscalYear": "2025", "resourceID": "7656125", "projectNumber": "83848"}
+    response = requests.post(url, headers=headers, data=params)
+    return response.json()
+
 def authenticate() -> str:
     """
     Authenticate using Entra ID and return the access token.
@@ -76,4 +90,5 @@ def authenticate() -> str:
 
 if __name__ == "__main__":
     # token = authenticate()
-    response = call_apim_search_post()
+    # response = call_apim_search_post()
+    response = call_apim_cost_post()

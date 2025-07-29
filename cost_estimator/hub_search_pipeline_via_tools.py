@@ -22,7 +22,7 @@ class Pipeline(FunctionCallingBlueprint):
         CLIENT_SECRET: str = Field(default="", description="client secret for service account")
         TENANT_ID: str = Field(default="", description="tenant ID for service account")
 
-    _ENDPOINT = "https://labassist.pnnl.gov/proxy/actman/elasticsearch/hub-suggestions-people/_search"
+    _ENDPOINT = "https://apimdevgw.pnnl.gov/proof-of-concept-hub-mcp/v1/hub"
 
     class Tools:
         def __init__(self, pipeline) -> None:
