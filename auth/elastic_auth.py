@@ -6,10 +6,10 @@ from msal import ConfidentialClientApplication
 # Load environment variables from .env file
 load_dotenv()
 # Retrieve environment variables
-CLIENT_ID = os.getenv('CLIENT_ID')
-CLIENT_SECRET = os.getenv('CLIENT_SECRET')
+CLIENT_ID = os.getenv('HUB_APIM_CLIENT_ID')
+CLIENT_SECRET = os.getenv('HUB_APIM_CLIENT_SECRET')
 TENANT_ID = os.getenv('TENANT_ID')
-SCOPE = ["https://labassist.pnnl.gov/proxy/.default"]
+SCOPE = [os.getenv('HUB_APIM_SCOPE')]
 from azure.identity import ClientSecretCredential
 
 # URL to request a token from Azure AD
@@ -33,6 +33,31 @@ def call_elastic_search():
     response = requests.get(url, headers=headers)
     return response
 
+def call_apim_search_get():
+    """
+    Call the APIM search endpoint to retrieve user information based on a query.
+    """
+    access_token = get_access_token()
+    url = "https://apimdevgw.pnnl.gov/proof-of-concept-hub-mcp/v1/hub"
+    headers = {
+        'Authorization': f'Bearer {access_token}',
+        'User-Agent': 'curl/7.64.1'  # Example curl User-Agent value
+    }
+    response = requests.get(url, headers=headers, params={"name": "Olivia Hess"})
+    return response.json()
+
+def call_apim_search_post():
+    """
+    Call the APIM search endpoint to retrieve user information based on a query.
+    """
+    access_token = get_access_token()
+    url = "https://apimdevgw.pnnl.gov/proof-of-concept-hub-mcp/v1/hub"
+    headers = {
+        'Authorization': f'Bearer {access_token}',
+        'User-Agent': 'requests'  # Example requests User-Agent value
+    }
+    response = requests.post(url, headers=headers, data={"searchTerm": "python"})
+    return response.json()
 
 def authenticate() -> str:
     """
@@ -50,5 +75,5 @@ def authenticate() -> str:
     return credential.get_token("https://labassist.pnnl.gov/proxy/.default").token
 
 if __name__ == "__main__":
-    token = authenticate()
-    response = call_elastic_search()
+    # token = authenticate()
+    response = call_apim_search_post()
